@@ -15,12 +15,13 @@ constexpr double eps = 1e-4;
 template <typename T>
 struct Point {
   T x, y;
+  int id;
 
   Point() : x{0}, y{0} {}
-  Point(T _x, T _y) : x{_x}, y{_y} {}
+  Point(T _x, T _y, int _id) : x{_x}, y{_y}, id{_id} {}
 
   template <typename U>
-  Point(U _x, U _y) : x{static_cast<T>(_x)}, y{static_cast<T>(_y)}
+  Point(U _x, U _y, int _id) : x{static_cast<T>(_x)}, y{static_cast<T>(_y)}, id{_id}
   {
   }
 
@@ -133,9 +134,9 @@ Delaunay<T> triangulate(const std::vector<Point<T>>& points)
   /* Init Delaunay triangulation. */
   auto d = Delaunay<T>{};
 
-  const auto p0 = Node{midx - 20 * dmax, midy - dmax};
-  const auto p1 = Node{midx, midy + 20 * dmax};
-  const auto p2 = Node{midx + 20 * dmax, midy - dmax};
+  const auto p0 = Node{midx - 20 * dmax, midy - dmax, -1};
+  const auto p1 = Node{midx, midy + 20 * dmax, -1};
+  const auto p2 = Node{midx + 20 * dmax, midy - dmax, -1};
   d.triangles.emplace_back(Triangle<T>{p0, p1, p2});
 
   for (auto const& pt : points) {
@@ -176,7 +177,7 @@ Delaunay<T> triangulate(const std::vector<Point<T>>& points)
 
     /* Update triangulation. */
     for (auto const& e : edges) {
-      tmps.push_back({e.p0, e.p1, {pt.x, pt.y}});
+      tmps.push_back({e.p0, e.p1, {pt.x, pt.y, pt.id}});
     }
     d.triangles = tmps;
   }

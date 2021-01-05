@@ -36,13 +36,15 @@ void displayMe()
   glutSwapBuffers();
 }
 
+static int id = 1;
 void mouse_callback(int button, int state, int x, int y)
 {
   y = glutGet(GLUT_WINDOW_HEIGHT) - y;
   switch (button) {
     case GLUT_LEFT_BUTTON:
       if (state == GLUT_UP) {
-        context::points.push_back({x, y});
+        context::points.push_back({x, y, id});
+        id ++;
       }
       break;
     case GLUT_MIDDLE_BUTTON:
